@@ -1,0 +1,32 @@
+
+version: '3.7'
+services:
+  etcd1:
+    image: quay.io/coreos/etcd
+    ports:
+      - 2379:2379
+    networks:
+      - etcd
+    container_name: etcd1
+    command:
+      - /usr/local/bin/etcd
+      - -name
+      - etcd1
+      - --data-dir
+      - /etcd_data
+      - -advertise-client-urls
+      - http://etcd1:2379
+      - -listen-client-urls
+      - http://0.0.0.0:2379
+      - -initial-advertise-peer-urls
+      - http://etcd1:2380
+      - -listen-peer-urls
+      - http://0.0.0.0:2380
+      - -initial-cluster
+      - etcd0=http://etcd0:2380,etcd1=http://etcd1:2380,etcd2=http://etcd2:2380
+
+networks:
+  etcd:
+    name: etcd
+    driver: overlay
+    attachable: true
